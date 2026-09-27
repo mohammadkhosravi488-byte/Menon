@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#11143b" />
+  <meta name="description" content="Chemistry With Menon — a senior chemistry learning hub for Year 11 and Year 12." />
+  <title>Chemistry With Menon</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2311143b'/%3E%3Ccircle cx='20' cy='38' r='8' fill='%237b61ff'/%3E%3Ccircle cx='43' cy='24' r='7' fill='%23ffb65b'/%3E%3Cpath d='M25 34 37 27' stroke='white' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --ink: #11143b;
+      --ink-2: #1b2250;
+      --purple: #7157ff;
+      --purple-soft: #eeeaff;
+      --blue: #2d7ff9;
+      --cyan: #52d6e5;
+      --warm: #ffad55;
+      --warm-soft: #fff0dc;
+      --paper: #ffffff;
+      --wash: #f6f7fd;
+      --line: rgba(24, 31, 79, .12);
+      --muted: #626986;
+      --shadow: 0 24px 70px rgba(19, 25, 73, .13);
+      --radius: 26px;
+      --max: 1240px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font: 16px/1.6 "DM Sans", sans-serif;
+      overflow-x: hidden;
+    }
+    body::selection { background: var(--purple); color: white; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(calc(100% - 40px), var(--max)); margin: 0 auto; }
+
+    .site-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 100;
+      transition: .25s ease;
+    }
+    .site-header.scrolled {
+      background: rgba(255, 255, 255, .84);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font: 800 1rem/1 "Manrope", sans-serif; }
+    .brand-mark {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 13px;
+      background: var(--ink);
+      box-shadow: 0 10px 24px rgba(17, 20, 59, .24);
+    }
+    .brand-mark::before, .brand-mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+    .brand-mark::before { width: 10px; height: 10px; background: var(--purple); left: 9px; bottom: 9px; }
+    .brand-mark::after { width: 9px; height: 9px; background: var(--warm); right: 8px; top: 8px; }
+    .brand-mark span { position: absolute; height: 3px; width: 17px; background: white; left: 12px; top: 19px; rotate: -31deg; border-radius: 5px; }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-link, .resources-trigger {
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      padding: 10px 15px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+    }
+    .nav-link:hover, .nav-link.active, .resources-trigger:hover { background: rgba(113, 87, 255, .09); color: var(--purple); }
+    .resources-menu { position: relative; }
+    .resources-trigger { display: flex; align-items: center; gap: 7px; }
+    .chev { width: 8px; height: 8px; border: solid currentColor; border-width: 0 2px 2px 0; rotate: 45deg; margin-top: -4px; transition: .2s; }
+    .resources-menu:hover .chev, .resources-menu:focus-within .chev { rotate: 225deg; margin-top: 4px; }
+    .mega {
+      position: absolute;
+      right: -90px;
+      top: calc(100% + 14px);
+      width: min(700px, calc(100vw - 40px));
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: rgba(255,255,255,.97);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      translate: 0 -8px;
+      transition: .2s ease;
+    }
+    .resources-menu:hover .mega, .resources-menu:focus-within .mega { opacity: 1; visibility: visible; translate: 0 0; }
+    .mega-col { padding: 14px; border-radius: 17px; }
+    .mega-col:first-child { background: #f4f1ff; }
+    .mega-col:last-child { background: #eef7ff; }
+    .mega-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; font: 800 .95rem "Manrope"; }
+    .mega-title span:last-child { font: 700 .72rem "DM Sans"; color: var(--muted); }
+    .mega a { display: block; padding: 7px 9px; border-radius: 9px; color: var(--muted); font-size: .9rem; }
+    .mega a:hover { background: white; color: var(--ink); }
+    .header-cta { padding: 11px 18px; border-radius: 99px; background: var(--ink); color: white; font-weight: 700; }
+    .menu-toggle { display: none; border: 0; background: var(--ink); color: white; border-radius: 12px; width: 44px; height: 44px; font-size: 1.2rem; }
+
+    main { min-height: 100vh; }
+    .page { display: none; animation: pageIn .45s ease both; }
+    .page.active { display: block; }
+    @keyframes pageIn { from { opacity: 0; translate: 0 8px; } }
+
+    .hero {
+      min-height: 780px;
+      position: relative;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(113,87,255,.13), transparent 30%),
+        radial-gradient(circle at 78% 50%, rgba(45,127,249,.12), transparent 34%),
+        linear-gradient(180deg, #fbfbff, #fff);
+    }
+    #molecule-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .hero-grid { position: relative; z-index: 2; display: grid; grid-template-columns: 1.02fr .98fr; gap: 76px; align-items: center; padding: 148px 0 86px; }
+    .eyebrow { display: flex; align-items: center; gap: 10px; color: var(--purple); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .77rem; }
+    .eyebrow::before { content: ""; width: 34px; height: 2px; background: currentColor; }
+    h1, h2, h3 { font-family: "Manrope", sans-serif; line-height: 1.08; margin: 0; letter-spacing: -.035em; }
+    h1 { font-size: clamp(3.5rem, 6.5vw, 6.4rem); margin-top: 24px; max-width: 760px; }
+    .gradient-word { background: linear-gradient(110deg, var(--purple), var(--blue)); color: transparent; background-clip: text; }
+    .hero-copy > p { max-width: 620px; margin: 28px 0 34px; color: var(--muted); font-size: 1.14rem; }
+    .button-row { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn { display: inline-flex; justify-content: center; align-items: center; gap: 10px; min-height: 52px; padding: 0 23px; border-radius: 99px; font-weight: 800; cursor: pointer; transition: .2s ease; border: 1px solid var(--line); }
+    .btn:hover { translate: 0 -2px; }
+    .btn-primary { color: white; background: var(--ink); border-color: var(--ink); box-shadow: 0 12px 30px rgba(17,20,59,.2); }
+    .btn-secondary { background: rgba(255,255,255,.8); }
+    .btn .arrow { transition: .2s; }
+    .btn:hover .arrow { translate: 4px 0; }
+
+    .lab-card {
+      position: relative;
+      min-height: 480px;
+      overflow: hidden;
+      color: white;
+      background: linear-gradient(145deg, #141844, #262067 55%, #153b75);
+      border-radius: 38px;
+      box-shadow: 0 34px 90px rgba(28, 25, 79, .26);
+      transform: perspective(1000px) rotateY(-2deg) rotateX(1deg);
+    }
+    .lab-card::before { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, rgba(255,255,255,.09), transparent 34%); pointer-events: none; }
+    #lab-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .lab-top { position: absolute; inset: 22px 24px auto; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .lab-label { display: flex; gap: 9px; align-items: center; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; font-size: .72rem; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 0 rgba(82,214,229,.6); animation: pulsing 2s infinite; }
+    @keyframes pulsing { 70% { box-shadow: 0 0 0 12px rgba(82,214,229,0); } }
+    .lab-metric { color: rgba(255,255,255,.68); font-size: .8rem; }
+    .lab-controls { position: absolute; z-index: 2; inset: auto 24px 24px; padding: 18px; border: 1px solid rgba(255,255,255,.13); border-radius: 19px; background: rgba(10,13,50,.5); backdrop-filter: blur(12px); }
+    .range-row { display: grid; grid-template-columns: 92px 1fr 34px; align-items: center; gap: 12px; font-size: .8rem; color: rgba(255,255,255,.76); }
+    .range-row + .range-row { margin-top: 12px; }
+    input[type="range"] { width: 100%; accent-color: var(--warm); }
+    .lab-hint { position: absolute; z-index: 2; left: 50%; top: 49%; translate: -50% -50%; color: rgba(255,255,255,.45); font-size: .78rem; pointer-events: none; }
+
+    .ticker { position: relative; z-index: 4; border-block: 1px solid var(--line); overflow: hidden; background: white; }
+    .ticker-track { display: flex; width: max-content; animation: ticker 26s linear infinite; }
+    .ticker-group { display: flex; align-items: center; gap: 46px; padding: 18px 23px; color: var(--muted); font: 700 .78rem "Manrope"; text-transform: uppercase; letter-spacing: .11em; }
+    .ticker-group span::before { content: "✦"; margin-right: 46px; color: var(--warm); }
+    @keyframes ticker { to { translate: -50% 0; } }
+
+    .section { padding: 112px 0; }
+    .section-head { display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: end; margin-bottom: 56px; }
+    .section-head h2 { font-size: clamp(2.5rem, 5vw, 4.7rem); }
+    .section-head p { margin: 0; color: var(--muted); font-size: 1.08rem; max-width: 620px; justify-self: end; }
+    .path-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .path-card { position: relative; overflow: hidden; min-height: 390px; padding: 38px; border-radius: var(--radius); border: 1px solid var(--line); transition: .3s ease; }
+    .path-card:hover { translate: 0 -5px; box-shadow: var(--shadow); }
+    .path-card.y11 { background: linear-gradient(145deg, #f3efff, white 68%); }
+    .path-card.y12 { background: linear-gradient(145deg, #eaf5ff, white 68%); }
+    .path-number { color: var(--purple); font: 800 .76rem "Manrope"; letter-spacing: .12em; text-transform: uppercase; }
+    .path-card h3 { margin-top: 20px; font-size: 2.35rem; }
+    .path-card p { color: var(--muted); max-width: 430px; }
+    .module-pills { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
+    .module-pills span { background: rgba(255,255,255,.8); border: 1px solid var(--line); border-radius: 99px; padding: 8px 12px; font-weight: 700; font-size: .8rem; }
+    .path-link { position: absolute; right: 28px; bottom: 28px; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; color: white; background: var(--ink); font-size: 1.3rem; transition: .2s; }
+    .path-card:hover .path-link { rotate: -35deg; }
+
+    .aim-wrap { background: var(--ink); color: white; position: relative; overflow: hidden; }
+    .aim-wrap::before { content: ""; position: absolute; width: 520px; height: 520px; border: 1px solid rgba(255,255,255,.08); border-radius: 50%; right: -140px; top: -220px; box-shadow: 0 0 0 70px rgba(255,255,255,.025), 0 0 0 140px rgba(255,255,255,.018); }
+    .aim-grid { position: relative; display: grid; grid-template-columns: .8fr 1.2fr; gap: 90px; align-items: start; }
+    .aim-grid h2 { font-size: clamp(2.7rem, 5vw, 5rem); }
+    .aim-statement { border-left: 2px solid var(--warm); padding-left: 30px; color: rgba(255,255,255,.76); font-size: 1.15rem; }
+
+    .mentor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+    .orbit-stage { min-height: 470px; position: relative; display: grid; place-items: center; border-radius: 36px; background: #f4f2ff; overflow: hidden; }
+    .atom-core { position: absolute; width: 82px; height: 82px; border-radius: 50%; background: linear-gradient(145deg, var(--purple), var(--blue)); box-shadow: 0 0 50px rgba(113,87,255,.42); }
+    .orbit { position: absolute; width: 300px; height: 124px; border: 1px solid rgba(113,87,255,.32); border-radius: 50%; }
+    .orbit:nth-child(2) { rotate: 60deg; }
+    .orbit:nth-child(3) { rotate: -60deg; }
+    .electron { position: absolute; width: 17px; height: 17px; border-radius: 50%; background: var(--warm); top: 50%; left: 50%; margin: -8px; animation: electron 5s linear infinite; offset-path: ellipse(150px 62px at center); box-shadow: 0 0 18px var(--warm); }
+    .orbit:nth-child(2) .electron { animation-delay: -1.7s; }
+    .orbit:nth-child(3) .electron { animation-delay: -3.4s; }
+    @keyframes electron { to { offset-distance: 100%; } }
+    .mentor-copy h2 { font-size: clamp(2.7rem, 5vw, 4.8rem); margin: 16px 0 24px; }
+    .mentor-copy p { color: var(--muted); font-size: 1.08rem; }
+    .principles { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 28px 0 34px; }
+    .principle { padding: 18px; border: 1px solid var(--line); border-radius: 16px; font-weight: 700; }
+    .principle span { display: block; color: var(--purple); font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 6px; }
+
+    .page-hero { padding: 165px 0 72px; background: linear-gradient(135deg, #11143b, #272068 65%, #16487b); color: white; position: relative; overflow: hidden; }
+    .page-hero::after { content: ""; position: absolute; width: 420px; height: 420px; border-radius: 50%; border: 1px solid rgba(255,255,255,.12); right: -70px; top: -180px; box-shadow: 0 0 0 66px rgba(255,255,255,.03), 0 0 0 132px rgba(255,255,255,.02); }
+    .page-hero h1 { font-size: clamp(3.2rem, 7vw, 6rem); max-width: 900px; }
+    .page-hero p { color: rgba(255,255,255,.72); max-width: 650px; font-size: 1.1rem; }
+    .resource-jumps { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; position: relative; z-index: 2; }
+    .resource-jumps a { border: 1px solid rgba(255,255,255,.22); background: rgba(255,255,255,.07); padding: 10px 15px; border-radius: 99px; font-weight: 700; }
+    .resource-jumps a:hover { background: white; color: var(--ink); }
+
+    .resource-year { padding: 90px 0; scroll-margin-top: 76px; }
+    .resource-year + .resource-year { background: var(--wash); }
+    .year-header { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 42px; }
+    .year-kicker { color: var(--purple); font-weight: 800; text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; }
+    .year-header h2 { font-size: clamp(2.6rem, 5vw, 4.4rem); margin-top: 10px; }
+    .year-header p { max-width: 460px; color: var(--muted); margin: 0; }
+    .module-list { display: grid; gap: 18px; }
+    .module-card { border: 1px solid var(--line); border-radius: 24px; background: white; overflow: hidden; scroll-margin-top: 100px; }
+    .module-head { width: 100%; display: grid; grid-template-columns: 90px 1fr auto; gap: 22px; align-items: center; padding: 24px; border: 0; background: transparent; color: var(--ink); text-align: left; cursor: pointer; }
+    .module-index { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; background: var(--purple-soft); color: var(--purple); font: 800 1.2rem "Manrope"; }
+    .year-12 .module-index { background: #e7f3ff; color: var(--blue); }
+    .module-head h3 { font-size: 1.35rem; letter-spacing: -.02em; }
+    .module-head p { margin: 3px 0 0; color: var(--muted); font-size: .9rem; }
+    .expand { width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; background: var(--wash); font-size: 1.35rem; transition: .25s; }
+    .module-card.open .expand { rotate: 45deg; background: var(--ink); color: white; }
+    .module-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .34s ease; }
+    .module-card.open .module-body { grid-template-rows: 1fr; }
+    .module-body-inner { overflow: hidden; }
+    .resource-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 24px 24px; }
+    .slot { min-height: 190px; border: 1.5px dashed rgba(24,31,79,.2); border-radius: 18px; display: flex; flex-direction: column; justify-content: space-between; padding: 20px; background: #fbfbfe; }
+    .slot-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: white; border: 1px solid var(--line); color: var(--purple); }
+    .slot h4 { margin: 18px 0 3px; font: 800 1rem "Manrope"; }
+    .slot p { color: var(--muted); font-size: .85rem; margin: 0; }
+    .empty-label { margin-top: 18px; color: #8a90a8; font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; }
+
+    .about-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .about-intro h2 { font-size: clamp(2.7rem, 5vw, 4.7rem); }
+    .about-intro .lead { font-size: 1.22rem; color: var(--ink); }
+    .about-intro p { color: var(--muted); }
+    .quote-panel { margin-top: 34px; padding: 28px; border-radius: 22px; background: var(--warm-soft); border-left: 3px solid var(--warm); }
+    .quote-panel p { margin: 0; color: var(--ink); font: 700 1.15rem/1.55 "Manrope"; }
+    .objectives { background: var(--wash); }
+    .objective-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .objective-card { padding: 30px; border: 1px solid var(--line); border-radius: 24px; background: white; }
+    .objective-card .num { color: var(--purple); font: 800 .75rem "Manrope"; letter-spacing: .12em; }
+    .objective-card h3 { font-size: 1.45rem; margin: 14px 0 20px; }
+    .objective-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 13px; color: var(--muted); }
+    .objective-card li { padding-left: 19px; position: relative; }
+    .objective-card li::before { content: ""; position: absolute; width: 7px; height: 7px; border-radius: 50%; background: var(--warm); left: 0; top: .58em; }
+    .year-objectives { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .year-objective { padding: 30px; border-radius: 24px; color: white; background: linear-gradient(145deg, var(--ink), #28236c); }
+    .year-objective:last-child { background: linear-gradient(145deg, #15305f, #285da0); }
+    .year-objective h3 { font-size: 1.55rem; margin-bottom: 18px; }
+    .year-objective ul { margin: 0; padding-left: 20px; color: rgba(255,255,255,.72); }
+    .year-objective li + li { margin-top: 10px; }
+
+    footer { background: #0c0f2e; color: white; padding: 60px 0 28px; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 50px; }
+    .footer-brand p { max-width: 370px; color: rgba(255,255,255,.58); }
+    .footer-col strong { display: block; font: 800 .78rem "Manrope"; text-transform: uppercase; letter-spacing: .11em; color: rgba(255,255,255,.45); margin-bottom: 13px; }
+    .footer-col a { display: block; color: rgba(255,255,255,.72); padding: 5px 0; }
+    .footer-col a:hover { color: var(--warm); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,.1); margin-top: 46px; padding-top: 22px; color: rgba(255,255,255,.42); font-size: .82rem; }
+
+    @media (max-width: 980px) {
+      .menu-toggle { display: block; }
+      .nav-links { display: none; position: absolute; top: 74px; left: 20px; right: 20px; flex-direction: column; align-items: stretch; padding: 12px; background: white; box-shadow: var(--shadow); border: 1px solid var(--line); border-radius: 20px; }
+      .nav-links.open { display: flex; }
+      .nav-link, .resources-trigger { width: 100%; text-align: left; }
+      .header-cta { display: none; }
+      .mega { position: static; width: 100%; opacity: 1; visibility: visible; translate: 0; display: none; box-shadow: none; margin-top: 7px; }
+      .resources-menu.open .mega { display: grid; }
+      .hero-grid, .mentor-grid, .about-intro { grid-template-columns: 1fr; }
+      .hero-grid { gap: 50px; }
+      .lab-card { min-height: 440px; transform: none; }
+      .section-head, .aim-grid { grid-template-columns: 1fr; gap: 25px; }
+      .section-head p { justify-self: start; }
+      .objective-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .shell { width: min(calc(100% - 28px), var(--max)); }
+      .brand { font-size: .9rem; }
+      .nav { height: 72px; }
+      .hero-grid { padding-top: 116px; }
+      .hero { min-height: auto; }
+      h1 { font-size: clamp(3rem, 15vw, 4.6rem); }
+      .lab-card { min-height: 420px; border-radius: 26px; }
+      .section { padding: 78px 0; }
+      .path-grid, .year-objectives { grid-template-columns: 1fr; }
+      .path-card { padding: 27px; min-height: 370px; }
+      .year-header { align-items: start; flex-direction: column; }
+      .module-head { grid-template-columns: 56px 1fr auto; gap: 12px; padding: 17px; }
+      .module-index { width: 52px; height: 52px; }
+      .module-head h3 { font-size: 1.06rem; }
+      .module-head p { display: none; }
+      .resource-slots { grid-template-columns: 1fr; padding: 0 17px 17px; }
+      .slot { min-height: 165px; }
+      .principles { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+      .footer-brand { grid-column: 1 / -1; }
+      .mega { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="site-header">
+    <div class="nav shell">
+      <a class="brand route-link" href="#home" aria-label="Chemistry With Menon home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>Chemistry With Menon</span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-label="Open navigation">☰</button>
+      <nav class="nav-links" id="nav-links" aria-label="Main navigation">
+        <a class="nav-link route-link" href="#home">Home</a>
+        <div class="resources-menu" id="resources-menu">
+          <button class="resources-trigger" id="resources-trigger" aria-expanded="false">Resources <span class="chev"></span></button>
+          <div class="mega">
+            <div class="mega-col">
+              <div class="mega-title"><span>Year 11</span><span>Modules 1–4</span></div>
+              <a href="#resources/module-1">Module 1 · Properties & structure</a>
+              <a href="#resources/module-2">Module 2 · Quantitative chemistry</a>
+              <a href="#resources/module-3">Module 3 · Reactive chemistry</a>
+              <a href="#resources/module-4">Module 4 · Drivers of reactions</a>
+            </div>
+            <div class="mega-col">
+              <div class="mega-title"><span>Year 12</span><span>Modules 5–8</span></div>
+              <a href="#resources/module-5">Module 5 · Equilibrium & acids</a>
+              <a href="#resources/module-6">Module 6 · Acid/base reactions</a>
+              <a href="#resources/module-7">Module 7 · Organic chemistry</a>
+              <a href="#resources/module-8">Module 8 · Applying chemistry</a>
+            </div>
+          </div>
+        </div>
+        <a class="nav-link route-link" href="#about">About</a>
+      </nav>
+      <a class="header-cta" href="#resources">Open resources</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="page active" data-page="home">
+      <section class="hero">
+        <canvas id="molecule-canvas" aria-hidden="true"></canvas>
+        <div class="hero-grid shell">
+          <div class="hero-copy">
+            <div class="eyebrow">Senior chemistry · Years 11 & 12</div>
+            <h1>Make the invisible <span class="gradient-word">make sense.</span></h1>
+            <p>Welcome to Chemistry With Menon — a focused learning space for understanding matter, reactions and the ideas that connect them, guided by Ms Laiju Menon.</p>
+            <div class="button-row">
+              <a class="btn btn-primary" href="#resources">Explore resources <span class="arrow">→</span></a>
+              <a class="btn btn-secondary" href="#about">Meet Ms Menon</a>
+            </div>
+          </div>
+          <div class="lab-card" id="lab-card" aria-label="Interactive molecular field">
+            <canvas id="lab-canvas"></canvas>
+            <div class="lab-top">
+              <span class="lab-label"><span class="pulse"></span> Molecular field</span>
+              <span class="lab-metric" id="lab-metric">12 particles</span>
+            </div>
+            <span class="lab-hint">Move through the field</span>
+            <div class="lab-controls">
+              <label class="range-row"><span>Energy</span><input id="energy" type="range" min="20" max="100" value="54" /><output id="energy-value">54</output></label>
+              <label class="range-row"><span>Attraction</span><input id="attraction" type="range" min="10" max="100" value="68" /><output id="attraction-value">68</output></label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track">
+          <div class="ticker-group"><span>Atomic structure</span><span>Stoichiometry</span><span>Equilibrium</span><span>Organic chemistry</span><span>Scientific thinking</span></div>
+          <div class="ticker-group"><span>Atomic structure</span><span>Stoichiometry</span><span>Equilibrium</span><span>Organic chemistry</span><span>Scientific thinking</span></div>
+        </div>
+      </div>
+
+      <section class="section">
+        <div class="shell">
+          <div class="section-head">
+            <div><div class="eyebrow">Choose your pathway</div><h2>Two years.<br />One connected story.</h2></div>
+            <p>Build the foundations in Year 11, then use them to explain equilibrium, acids, organic systems and the real-world applications of chemistry in Year 12.</p>
+          </div>
+          <div class="path-grid">
+            <article class="path-card y11">
+              <div class="path-number">Foundation pathway</div>
+              <h3>Year 11</h3>
+              <p>Understand the fundamentals of chemistry, then examine the trends and driving forces behind chemical interactions.</p>
+              <div class="module-pills"><span>Module 1</span><span>Module 2</span><span>Module 3</span><span>Module 4</span></div>
+              <a class="path-link" href="#resources/year-11" aria-label="Open Year 11 resources">↗</a>
+            </article>
+            <article class="path-card y12">
+              <div class="path-number">Application pathway</div>
+              <h3>Year 12</h3>
+              <p>Develop a deeper understanding of equilibrium and acid reactions, organic chemistry and applied chemical analysis.</p>
+              <div class="module-pills"><span>Module 5</span><span>Module 6</span><span>Module 7</span><span>Module 8</span></div>
+              <a class="path-link" href="#resources/year-12" aria-label="Open Year 12 resources">↗</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section aim-wrap">
+        <div class="aim-grid shell">
+          <div><div class="eyebrow" style="color:var(--warm)">The course aim</div><h2>Think like a chemist.</h2></div>
+          <div class="aim-statement">The study of Chemistry in Stage 6 enables students to develop an appreciation and understanding of materials and their properties, structures, interactions and related applications. Through applying Working Scientifically skills processes, the course aims to examine how chemical theories, models and practices are used and developed.</div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="mentor-grid shell">
+          <div class="orbit-stage" aria-label="Animated atomic orbital illustration">
+            <div class="atom-core"></div>
+            <div class="orbit"><div class="electron"></div></div>
+            <div class="orbit"><div class="electron"></div></div>
+            <div class="orbit"><div class="electron"></div></div>
+          </div>
+          <div class="mentor-copy">
+            <div class="eyebrow">Learn with Ms Menon</div>
+            <h2>Clarity before memorisation.</h2>
+            <p>Ms Laiju Menon's teaching space is designed to help senior students connect models, evidence and calculation. Each module has a clear home, making it simple to return to the lesson material you need.</p>
+            <div class="principles">
+              <div class="principle"><span>01</span>Understand the model</div>
+              <div class="principle"><span>02</span>Apply the evidence</div>
+              <div class="principle"><span>03</span>Explain with precision</div>
+              <div class="principle"><span>04</span>Connect to the world</div>
+            </div>
+            <a class="btn btn-primary" href="#about">About this learning space <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <section class="page" data-page="resources">
+      <section class="page-hero">
+        <div class="shell">
+          <div class="eyebrow" style="color:var(--warm)">Learning library</div>
+          <h1>Resources, organised by your course.</h1>
+          <p>Year 11 and Year 12 are kept separate and easy to scan. Every module includes clearly marked spaces for lesson slides, PDFs and videos.</p>
+          <div class="resource-jumps"><a href="#resources/year-11">Year 11 · Modules 1–4</a><a href="#resources/year-12">Year 12 · Modules 5–8</a></div>
+        </div>
+      </section>
+      <div id="resource-content"></div>
+    </section>
+
+    <section class="page" data-page="about">
+      <section class="page-hero">
+        <div class="shell">
+          <div class="eyebrow" style="color:var(--warm)">About the classroom</div>
+          <h1>Chemistry is a way of seeing.</h1>
+          <p>Meet the thinking behind Chemistry With Menon and the Stage 6 learning goals that shape this space.</p>
+        </div>
+      </section>
+      <section class="section">
+        <div class="about-intro shell">
+          <div><div class="eyebrow">Ms Laiju Menon</div><h2>Teaching the connections, not just the content.</h2></div>
+          <div>
+            <p class="lead">Chemistry With Menon gives senior students a clear place to revisit the ideas, methods and resources from their chemistry learning.</p>
+            <p>The teaching approach centres on making abstract chemical models understandable, linking evidence to explanation, and helping students communicate scientific reasoning with confidence.</p>
+            <div class="quote-panel"><p>From particles too small to see to systems that shape everyday life, chemistry rewards curiosity, precision and imagination.</p></div>
+          </div>
+        </div>
+      </section>
+      <section class="section objectives">
+        <div class="shell">
+          <div class="section-head">
+            <div><div class="eyebrow">Course objectives</div><h2>What students develop.</h2></div>
+            <p>The Stage 6 course brings together scientific skills, disciplinary knowledge and an informed appreciation of chemistry's place in society.</p>
+          </div>
+          <div class="objective-grid">
+            <article class="objective-card"><span class="num">01 · Skills</span><h3>Working Scientifically</h3><ul><li>Develop skills in applying the processes of Working Scientifically.</li></ul></article>
+            <article class="objective-card"><span class="num">02 · Values</span><h3>Relevance and responsibility</h3><ul><li>Develop positive, informed values and attitudes towards chemistry.</li><li>Recognise the importance and relevance of chemistry in their lives.</li></ul></article>
+            <article class="objective-card"><span class="num">03 · Perspective</span><h3>Science in society</h3><ul><li>Recognise the influence of economic, political and societal impacts on scientific knowledge.</li><li>Appreciate imagination and creativity in scientific research.</li></ul></article>
+          </div>
+          <div class="year-objectives">
+            <article class="year-objective"><h3>Year 11 knowledge</h3><ul><li>Develop knowledge and understanding of the fundamentals of chemistry.</li><li>Develop knowledge and understanding of the trends and driving forces in chemical interactions.</li></ul></article>
+            <article class="year-objective"><h3>Year 12 knowledge</h3><ul><li>Develop knowledge and understanding of equilibrium and acid reactions.</li><li>Develop knowledge and understanding of the applications of chemistry.</li></ul></article>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell">
+      <div class="footer-grid">
+        <div class="footer-brand"><div class="brand"><span class="brand-mark"><span></span></span><span>Chemistry With Menon</span></div><p>A dedicated Stage 6 chemistry learning space for Year 11 and Year 12 students.</p></div>
+        <div class="footer-col"><strong>Navigate</strong><a href="#home">Home</a><a href="#resources">Resources</a><a href="#about">About</a></div>
+        <div class="footer-col"><strong>Resources</strong><a href="#resources/year-11">Year 11</a><a href="#resources/year-12">Year 12</a></div>
+      </div>
+      <div class="footer-bottom">Chemistry With Menon · Senior Chemistry</div>
+    </div>
+  </footer>
+
+  <script>
+    const modules = [
+      { n: 1, year: 11, title: 'Properties and Structure of Matter', note: 'Year 11 · Module 1' },
+      { n: 2, year: 11, title: 'Introduction to Quantitative Chemistry', note: 'Year 11 · Module 2' },
+      { n: 3, year: 11, title: 'Reactive Chemistry', note: 'Year 11 · Module 3' },
+      { n: 4, year: 11, title: 'Drivers of Reactions', note: 'Year 11 · Module 4' },
+      { n: 5, year: 12, title: 'Equilibrium and Acid Reactions', note: 'Year 12 · Module 5' },
+      { n: 6, year: 12, title: 'Acid/base Reactions', note: 'Year 12 · Module 6' },
+      { n: 7, year: 12, title: 'Organic Chemistry', note: 'Year 12 · Module 7' },
+      { n: 8, year: 12, title: 'Applying Chemical Ideas', note: 'Year 12 · Module 8' }
+    ];
+
+    const resourceContent = document.getElementById('resource-content');
+    const slot = (icon, title, copy) => `<article class="slot"><div><span class="slot-icon">${icon}</span><h4>${title}</h4><p>${copy}</p></div><span class="empty-label">Ready for your content</span></article>`;
+    const yearSection = year => {
+      const range = year === 11 ? 'Modules 1–4' : 'Modules 5–8';
+      const description = year === 11 ? 'Foundations, structure, quantitative thinking and the forces that drive reactions.' : 'Equilibrium, acids, organic chemistry and applying chemical ideas.';
+      return `<section class="resource-year year-${year}" id="year-${year}"><div class="shell"><div class="year-header"><div><div class="year-kicker">${range}</div><h2>Year ${year}</h2></div><p>${description}</p></div><div class="module-list">${modules.filter(m => m.year === year).map((m, i) => `<article class="module-card ${i === 0 ? 'open' : ''}" id="module-${m.n}"><button class="module-head" aria-expanded="${i === 0}"><span class="module-index">${String(m.n).padStart(2,'0')}</span><span><h3>${m.title}</h3><p>${m.note}</p></span><span class="expand">+</span></button><div class="module-body"><div class="module-body-inner"><div class="resource-slots">${slot('▤','Lesson slides','A space for module lesson presentations.')}${slot('PDF','PDF resources','A space for worksheets, notes and readings.')}${slot('▶','Lesson videos','A space for recorded explanations and demonstrations.')}</div></div></div></article>`).join('')}</div></div></section>`;
+    };
+    resourceContent.innerHTML = yearSection(11) + yearSection(12);
+
+    document.querySelectorAll('.module-head').forEach(button => button.addEventListener('click', () => {
+      const card = button.closest('.module-card');
+      const open = card.classList.toggle('open');
+      button.setAttribute('aria-expanded', open);
+    }));
+
+    const header = document.getElementById('site-header');
+    const navLinks = document.getElementById('nav-links');
+    const menuToggle = document.getElementById('menu-toggle');
+    const resourcesMenu = document.getElementById('resources-menu');
+    const resourcesTrigger = document.getElementById('resources-trigger');
+    menuToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', open);
+    });
+    resourcesTrigger.addEventListener('click', () => {
+      if (innerWidth <= 980) {
+        const open = resourcesMenu.classList.toggle('open');
+        resourcesTrigger.setAttribute('aria-expanded', open);
+      } else location.hash = 'resources';
+    });
+    addEventListener('scroll', () => header.classList.toggle('scrolled', scrollY > 20));
+
+    function route() {
+      const parts = location.hash.replace('#','').split('/').filter(Boolean);
+      const page = ['resources','about'].includes(parts[0]) ? parts[0] : 'home';
+      document.querySelectorAll('.page').forEach(el => el.classList.toggle('active', el.dataset.page === page));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.toggle('active', el.getAttribute('href') === `#${page}`));
+      navLinks.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.title = `${page === 'home' ? 'Chemistry With Menon' : page[0].toUpperCase()+page.slice(1)+' · Chemistry With Menon'}`;
+      requestAnimationFrame(() => {
+        if (parts[1]) document.getElementById(parts[1])?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        else scrollTo({ top: 0, behavior: 'instant' });
+      });
+    }
+    addEventListener('hashchange', route);
+    route();
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function setupCanvas(canvas, ambient = false) {
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = 0, h = 0, dpr = 1, pointer = { x: -9999, y: -9999 };
+      let energy = 54, attraction = 68;
+      const count = ambient ? 28 : 12;
+      const particles = Array.from({ length: count }, (_, i) => ({
+        x: Math.random(), y: Math.random(), vx: (Math.random()-.5)*.15, vy: (Math.random()-.5)*.15,
+        r: ambient ? 2 + Math.random()*3 : 4 + Math.random()*8,
+        tone: i % 3
+      }));
+      function resize() {
+        const rect = canvas.getBoundingClientRect(); dpr = Math.min(devicePixelRatio || 1, 2); w = rect.width; h = rect.height;
+        canvas.width = w*dpr; canvas.height = h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      }
+      function draw() {
+        ctx.clearRect(0,0,w,h);
+        const speed = ambient ? .16 : energy/180;
+        particles.forEach((p, i) => {
+          if (!reduced) { p.x += p.vx*speed/w*60; p.y += p.vy*speed/h*60; }
+          if (p.x < -.05 || p.x > 1.05) p.vx *= -1;
+          if (p.y < -.05 || p.y > 1.05) p.vy *= -1;
+          const px = p.x*w, py = p.y*h;
+          const pd = Math.hypot(pointer.x-px, pointer.y-py);
+          if (pd < 130 && !ambient) { p.vx += (pointer.x-px)/Math.max(pd,1)*.006; p.vy += (pointer.y-py)/Math.max(pd,1)*.006; }
+          particles.slice(i+1).forEach(q => {
+            const qx=q.x*w, qy=q.y*h, dist=Math.hypot(px-qx,py-qy);
+            const threshold = ambient ? 125 : 80 + attraction;
+            if (dist < threshold) {
+              ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(qx,qy);
+              ctx.strokeStyle = ambient ? `rgba(113,87,255,${(1-dist/threshold)*.13})` : `rgba(155,188,255,${(1-dist/threshold)*.28})`;
+              ctx.lineWidth = 1; ctx.stroke();
+            }
+          });
+          const colors = ambient ? ['113,87,255','45,127,249','255,173,85'] : ['123,97,255','82,214,229','255,173,85'];
+          const glow = ctx.createRadialGradient(px,py,0,px,py,p.r*3.2); glow.addColorStop(0,`rgba(${colors[p.tone]},.9)`); glow.addColorStop(.35,`rgba(${colors[p.tone]},.32)`); glow.addColorStop(1,`rgba(${colors[p.tone]},0)`);
+          ctx.fillStyle=glow; ctx.beginPath(); ctx.arc(px,py,p.r*3.2,0,Math.PI*2); ctx.fill();
+          ctx.fillStyle=`rgb(${colors[p.tone]})`; ctx.beginPath(); ctx.arc(px,py,p.r,0,Math.PI*2); ctx.fill();
+        });
+        requestAnimationFrame(draw);
+      }
+      canvas.addEventListener('pointermove', e => { const r=canvas.getBoundingClientRect(); pointer={x:e.clientX-r.left,y:e.clientY-r.top}; });
+      canvas.addEventListener('pointerleave', () => pointer={x:-9999,y:-9999});
+      addEventListener('resize', resize); resize(); draw();
+      return { setEnergy:v=>energy=v, setAttraction:v=>attraction=v };
+    }
+    setupCanvas(document.getElementById('molecule-canvas'), true);
+    const lab = setupCanvas(document.getElementById('lab-canvas'));
+    const energyInput = document.getElementById('energy'), attractionInput = document.getElementById('attraction');
+    energyInput.addEventListener('input', () => { document.getElementById('energy-value').value = energyInput.value; lab.setEnergy(+energyInput.value); });
+    attractionInput.addEventListener('input', () => { document.getElementById('attraction-value').value = attractionInput.value; lab.setAttraction(+attractionInput.value); });
+  </script>
+</body>
+</html>
+
